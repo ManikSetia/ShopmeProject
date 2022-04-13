@@ -49,7 +49,7 @@ public class UserController {
 
         userService.save(user);
 
-        redirectAttributes.addFlashAttribute("saveMessage", "The user has been added successfully.");
+        redirectAttributes.addFlashAttribute("alertMessage", "The user has been added successfully.");
         return "redirect:/users";//if redirect is not used, then we'll have to refresh the page after saving the object
     }
 
@@ -66,10 +66,21 @@ public class UserController {
             return "user_form";
         }
         catch (UserNotFoundException ex){
-            redirectAttributes.addFlashAttribute("userNotFoundMessage", ex.getMessage());
+            redirectAttributes.addFlashAttribute("alertMessage", ex.getMessage());
             return "redirect:/users";
         }
+    }
 
+    @GetMapping("/users/delete/{id}")
+    public String deleteUser(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes){
+        try{
+            userService.delete(id);
+            redirectAttributes.addFlashAttribute("alertMessage", "The user with ID: "+id+" has been deleted successfully.");
+        }
+        catch (UserNotFoundException ex){
+            redirectAttributes.addFlashAttribute("alertMessage", ex.getMessage());
+        }
+        return "redirect:/users";
     }
 
 }

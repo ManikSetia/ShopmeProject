@@ -75,6 +75,7 @@ public class UserService {
         return true;
     }
 
+    //For edit button in users listing
     public User get(Integer id) throws UserNotFoundException {
         try{
             return userRepository.findById(id).get();
@@ -82,5 +83,13 @@ public class UserService {
         catch(NoSuchElementException ex){
             throw new UserNotFoundException("Could not find any user with ID: "+id);
         }
+    }
+
+    //For deleting the user. The reason we're not using get() method is that get() method gives you the complete user but we just want to check the existence of the user
+    public void delete(Integer id)throws UserNotFoundException{
+        Long countById= userRepository.countById(id);
+        if(countById == null || countById == 0) throw new UserNotFoundException("Could not find any user with ID: "+id);
+
+        userRepository.deleteById(id);
     }
 }
