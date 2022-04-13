@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, intial-scale=1.0, minimum-scale=1.0">
 
-    <title>Home - Shopme Admin</title>
+    <title>[[${pageTitle}]]</title>
 
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
     <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
@@ -65,11 +65,12 @@
 
 
         <div>
-            <h2>Manage Users | Create new user</h2>
+            <h2>Manage Users | [[${pageTitle}]]</h2>
         </div>
 
         <form th:action="@{/users/save}" method="post" style="max-width: 700px; margin: 0 auto"
             th:object="${user}" onsubmit="return checkEmailUnique(this)"><!-- This object is coming from controller(/users/new api) -->
+            <input type="hidden" th:field="*{id}"><!-- For validation of email in editing the form -->
             <div class="border border-secondary rounded p-3">
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">E-mail:</label>
@@ -98,8 +99,13 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label">Password:</label>
                     <div class="col-sm-8">
-                        <input type="password" class="form-control" th:field="*{password}"
+                        <!-- Creating new user -->
+                        <input th:if="${id} == null" type="password" class="form-control" th:field="*{password}"
                                required minlength="8" maxlength="128"/>
+
+                        <!-- Editing an user -->
+                        <input th:if="${id} != null" type="password" class="form-control" th:field="*{password}"
+                                minlength="8" maxlength="128"/>
                     </div>
                 </div>
 
@@ -173,9 +179,9 @@
             <!-- Specify the url where we want to check the email uniqueness -->
             url="[[@{/users/check_email}]]";
             userEmail=$("#email").val();
+            userID=$("#id").val();
             csrfValue=$("input[name='_csrf']").val();
-            params={email: userEmail, _csrf: csrfValue};<!-- Need to pass the name of attributes with the values -->
-
+            params={id: userID, email: userEmail, _csrf: csrfValue};<!-- Need to pass the name of attributes with the values -->
 
             <!-- Method is given by jQuery to send AJAX to the server -->
             $.post(url, params, function(response) {

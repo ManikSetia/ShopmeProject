@@ -74,6 +74,9 @@
         <div th:if="${saveMessage != null}" class="alert alert-success text-center">
             [[${saveMessage}]]
         </div>
+        <div th:if="${userNotFoundMessage != null}" class="alert alert-success text-center">
+            [[${userNotFoundMessage}]]
+        </div>
 
         <div>
             <table class="table table-bordered table-striped table-hover table-responsive-xl">
@@ -100,7 +103,7 @@
                         <td><a th:if="${user.enabled} == true" class="fas fa-check-circle fa-2x icon-green" href="#"></a>
                             <a th:if="${user.enabled} == false" class="fas fa-check-circle fa-2x icon-dark" href="#"></a>
                         </td>
-                        <td><a class="fas fa-edit fa-2x icon-green" href="#"></a> &nbsp;
+                        <td><a class="fas fa-edit fa-2x icon-green" th:href="@{'/users/edit/'+${user.id}}" title="Edit this user"></a> &nbsp;
                             <a class="fas fa-trash fa-2x icon-dark" href="#"></a></td>
                     </tr>
                 </tbody>
