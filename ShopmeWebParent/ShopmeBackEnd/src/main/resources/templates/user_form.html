@@ -69,7 +69,9 @@
         </div>
 
         <form th:action="@{/users/save}" method="post" style="max-width: 700px; margin: 0 auto"
-            th:object="${user}" onsubmit="return checkEmailUnique(this)"><!-- This object is coming from controller(/users/new api) -->
+            th:object="${user}" onsubmit="return checkEmailUnique(this)" enctype="multipart/form-data">
+            <!-- This object is coming from controller(/users/new api)
+                enctype is used to send the image name to the server when we've uploaded the image-->
             <input type="hidden" th:field="*{id}"><!-- For validation of email in editing the form -->
             <div class="border border-secondary rounded p-3">
                 <div class="form-group row">
@@ -132,6 +134,16 @@
                     </div>
                 </div>
 
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Photos:</label>
+                    <div class="col-sm-8">
+                        <input type="hidden" th:field="*{photos}"/>
+                        <input type="file" name="image" id="fileImage" class="mb-10" accept="image/png, image/jpeg" />
+                        <img th:src="@{${user.photosImagePath}}" id="thumbnail" alt="Photos preview"
+                        class="img-fluid"/>
+                    </div>
+                </div>
+
                 <div class="text-center">
                     <input type="submit" value="Save" class="btn btn-primary m-3">
                     <input type="button" value="Cancel" class="btn btn-secondary" id="cancelButton">
@@ -171,7 +183,32 @@
             $("#cancelButton").on("click", function () {
                 window.location="[[@{/users}]]"
             });
+
+            <!-- For displaying image in the thumbnail -->
+            $("#fileImage").change(function(){
+                fileSize=this.files[0].size;
+                // alert('File size: '+fileSize);
+
+                if(fileSize > 1048576){
+                    this.setCustomValidity("You must choose an image less than 1MB!");
+                    this.reportValidity();
+                }
+                else{
+                    this.setCustomValidity("");
+                    showImageThumbnail(this);
+                }
+            });
         });
+
+        function showImageThumbnail(fileInput){
+            var file=fileInput.files[0];
+            var reader=new FileReader();
+            reader.onload=function(e){
+                $("#thumbnail").attr("src", e.target.result)
+            };
+
+            reader.readAsDataURL(file);
+        }
 
         <!-- Check uniqueness of email -->
         function checkEmailUnique(form){

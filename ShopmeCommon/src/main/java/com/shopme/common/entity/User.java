@@ -124,4 +124,11 @@ public class User {
                 ", roles=" + roles +
                 '}';
     }
+
+    @Transient//means that it isn't mapped to any field in the database
+    public String getPhotosImagePath(){
+        if(photos==null) return "/images/default.png";
+
+        return "/user-photos/"+this.id+"/"+this.photos;
+    }
 }
