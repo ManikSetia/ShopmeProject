@@ -4,6 +4,8 @@ import com.shopme.admin.FileUploadUtil;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -25,8 +27,54 @@ public class UserController {
 
     @GetMapping("/users")
     public String listAllUsers(Model model){
-        List<User> userList=userService.listAllUsers();
+
+        //Display the first page for /users
+//        Page<User> page = userService.listByPage(1);
+//        List<User> userList = page.getContent();
+//
+//        model.addAttribute("userList", userList);
+//
+//        return "users";
+
+        //code reusability
+        return listByPage(1, model, "firstName", "asc", null);
+    }
+
+    //For pagination
+    @GetMapping("/users/page/{pageNumber}")
+    public String listByPage(@PathVariable("pageNumber") int pageNumber, Model model,
+                             @Param("sortField") String sortField, @Param("sortDirection") String sortDirection, @Param("keyword") String keyword){
+
+//        System.out.println("sortField: "+sortField);
+//        System.out.println("sortDirection: "+sortDirection);
+
+        Page<User> page = userService.listByPage(pageNumber, sortField, sortDirection, keyword);
+        List<User> userList = page.getContent();
+
+//        System.out.println("Total elements: "+page.getTotalElements());
+//        System.out.println("Total pages: "+page.getTotalPages());
+
+        long startCount=(pageNumber-1)*userService.USERS_PER_PAGE+1;
+        long endCount=startCount+userService.USERS_PER_PAGE-1;
+
+        if(endCount>page.getTotalElements()) {
+            endCount=page.getTotalElements();
+        }
+
+//        System.out.println("Start count: "+startCount);
+//        System.out.println("End count: "+endCount);
+
+        String reverseSortDirection=(sortDirection.equals("asc"))?"desc":"asc";
+        model.addAttribute("currentPage", pageNumber);
+        model.addAttribute("startCount", startCount);
+        model.addAttribute("endCount", endCount);
+        model.addAttribute("totalElements", page.getTotalElements());
+        model.addAttribute("lastPage", page.getTotalPages());
         model.addAttribute("userList", userList);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("reverseSortDirection", reverseSortDirection);
+        model.addAttribute("keyword", keyword);
 
         return "users";
     }
@@ -75,7 +123,14 @@ public class UserController {
 //        userService.save(user);
 
         redirectAttributes.addFlashAttribute("alertMessage", "The user has been added successfully.");
-        return "redirect:/users";//if redirect is not used, then we'll have to refresh the page after saving the object
+//        return "redirect:/users";//if redirect is not used, then we'll have to refresh the page after saving the object
+        return getRedirectURLToAffectedUsers(user);
+    }
+
+    //code improvement so that if any user is updated, the user will be redirected to the updation page.
+    private String getRedirectURLToAffectedUsers(User user) {
+        String firstPartOfEmail= user.getEmail().split("@")[0];
+        return "redirect:/users/page/1?sortField=id&sortDirection=asc&keyword=" + firstPartOfEmail;
     }
 
     @GetMapping("/users/edit/{id}")

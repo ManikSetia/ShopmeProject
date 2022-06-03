@@ -75,20 +75,38 @@
             [[${alertMessage}]]
         </div>
 
+        <!--Filter functionality-->
+        <div>
+            <form th:action="@{/users/page/1}" class="form-inline m-3">
+                <input type="hidden" th:value="${sortField}" name="sortField"/>
+                <input type="hidden" th:value="${sortDirection}" name="sortDirection"/>
+                Filter:&nbsp;
+                <input type="search" th:value="${keyword}" name="keyword" class="form-control"/>
+                &nbsp;&nbsp;
+                <input type="submit" th:value="Search" class="btn btn-primary" />
+                &nbsp;&nbsp;
+                <input type="button" th:value="Clear" class="btn btn-secondary" title="Display first page" onclick="clearFilter()"/>
+            </form>
+        </div>
+
 
         <div>
             <table class="table table-bordered table-striped table-hover table-responsive-xl">
                 <thead class="thead-dark">
                     <tr>
-                        <th>User ID</th>
-                        <th>Photos</th>
-                        <th>E-mail</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Roles</th>
-                        <th>Enabled</th>
+                        <th th:replace="fragments :: column_link('id', 'User ID')"></th>
+                        <th>
+                           Photos
+                        </th>
+                        <th th:replace="fragments :: column_link('email', 'E-mail')"></th>
+                        <th th:replace="fragments :: column_link('firstName', 'First Name')"></th>
+                        <th th:replace="fragments :: column_link('lastName', 'Last Name')"></th>
+                        <th>
+                            Roles
+                        </th>
+                        <th th:replace="fragments :: column_link('enabled', 'Enabled')"></th>
                         <th></th>
-                    </tr>
+                    </tr>,
                 </thead>
                 <tbody>
                     <tr th:each="user: ${userList}">
@@ -113,6 +131,39 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <!--for pagination-->
+        <div class="text-center m-1" th:if="${totalElements > 0}">
+            <span>Showing users #[[${startCount}]] to [[${endCount}]] of [[${totalElements}]]</span>
+        </div>
+        <div class="text-center m-1" th:unless="${totalElements > 0}">
+            <span>No users found</span>
+        </div>
+
+        <!--bootstrap-->
+        <div th:if="${lastPage > 1}"><!--Not to show pagination when there is only 1 page or less than 1 -->
+<!--            <nav>.-->
+                <ul class="pagination justify-content-center">
+                    <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                        <a th:replace="fragments :: page_link(1, 'First')"></a>
+                    </li>
+                    <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                        <a th:replace="fragments :: page_link(${currentPage-1}, 'Previous')"></a>
+                    </li>
+
+                    <li th:class="${currentPage == page ? 'page-item active':'page-item'}" th:each="page: ${#numbers.sequence(1, lastPage)}">
+                        <a th:replace="fragments :: page_link(${page}, ${page})"></a>
+                    </li>
+
+                    <li th:class="${currentPage == lastPage ? 'page-item disabled' : 'page-item'}">
+                        <a th:replace="fragments :: page_link(${currentPage+1}, 'Next')"></a>
+                    </li>
+                    <li th:class="${currentPage == lastPage ? 'page-item disabled' : 'page-item'}">
+                        <a th:replace="fragments :: page_link(${lastPage}, 'Last')"></a>
+                    </li>
+                </ul>
+            </nav>
         </div>
 
         <div class="modal fade text-center" id="deleteModal">
@@ -153,6 +204,10 @@
 
             });
         });
+
+        function clearFilter(){
+            window.location="[[@{/users}]]";
+        }
 
     </script>
 

@@ -7,7 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -104,5 +109,36 @@ class UserRepositoryTests {
     public void testDisabledStatus(){
         Integer id=1;
         repo.updateEnabledStatus(id, false);
+    }
+
+    @Test
+    public void testFirstPage(){
+        int pageNumber = 0;//First page
+        int pageSize = 4;
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<User> page = repo.findAll(pageable);
+
+        List<User> content=page.getContent();//gives list of objects on the corresponding page
+
+        content.forEach(user -> System.out.println(user));
+
+        assertThat(content.size()).isEqualTo(pageSize);
+    }
+
+    @Test
+    public void testSearchUsers(){
+        String keyword="bruce";
+        int pageNumber = 0;//First page
+        int pageSize = 4;
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<User> page = repo.findAll(keyword, pageable);
+
+        List<User> content=page.getContent();//gives list of objects on the corresponding page
+
+        content.forEach(user -> System.out.println(user));
+
+        assertThat(content.size()).isGreaterThan(0);
     }
 }

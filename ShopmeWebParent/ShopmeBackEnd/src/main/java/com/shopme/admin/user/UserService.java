@@ -3,6 +3,10 @@ package com.shopme.admin.user;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +17,9 @@ import java.util.NoSuchElementException;
 @Service
 @Transactional
 public class UserService {
+
+    //For pagination
+    public static final int USERS_PER_PAGE=4;
 
     @Autowired
     private UserRepository userRepository;
@@ -98,5 +105,18 @@ public class UserService {
     //For updating the enabled status
     public void updateUserEnabledStatus(Integer id, boolean enabled){
         userRepository.updateEnabledStatus(id, enabled);
+    }
+
+    //For pagination
+    public Page<User> listByPage(int pageNumber, String sortField, String sortDirection, String keyword){
+        Sort sort=Sort.by(sortField);
+
+        sort=(sortDirection.equals("asc")) ? sort.ascending() : sort.descending();
+        Pageable pageable= PageRequest.of(pageNumber - 1, USERS_PER_PAGE, sort);//1 is subtracted because Pageable works with index.
+
+        if(keyword != null){
+            return userRepository.findAll(keyword, pageable);
+        }
+        return userRepository.findAll(pageable);
     }
 }
