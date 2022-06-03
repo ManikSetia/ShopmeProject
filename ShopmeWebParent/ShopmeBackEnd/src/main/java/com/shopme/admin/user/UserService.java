@@ -30,8 +30,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    //Sort object is passed so that when we use "export to csv" functionality, list is sorted by first name.
     public List<User> listAllUsers(){
-        return (List<User>) userRepository.findAll();
+        return (List<User>) userRepository.findAll(Sort.by("firstName"));
     }
 
     //used to get all roles from the db so that we can pass to the form (of creating new user)
