@@ -12,19 +12,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class UserCSVExporter {
+public class UserCSVExporter extends AbstractExporter{
 
     public void export(List<User> listUsers, HttpServletResponse response) throws IOException {
-        DateFormat formatter=new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-        String timeStamp=formatter.format(new Date());
-        String fileName="users_"+timeStamp+".csv";
-
-        response.setContentType("text/csv");
-
-        //for allowing the browser to download the file
-        String headerKey="Content-Disposition";
-        String headerValue="attachment; filename="+fileName;
-        response.setHeader(headerKey, headerValue);
+        super.setResponseHeader(response, ".csv", "text/csv");
 
         //Now we've to use added dependency (super-csv) to write the csv file
         ICsvBeanWriter csvWriter=new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);

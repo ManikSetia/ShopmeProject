@@ -7,7 +7,7 @@
 <body>
 
     <th th:fragment="column_link(fieldName, columnHeader)">
-      <a class="text-white" th:href="@{'/users/page/'+${currentPage}+'?sortField='+${fieldName}+'&sortDirection='+${sortField != 'id' ? sortDirection : reverseSortDirection}+${keyword != null ? '&keyword='+keyword:''}}">[[${columnHeader}]]</a>
+      <a class="text-white" th:href="@{'/users/page/'+${currentPage}+'?sortField='+${fieldName}+'&sortDirection='+${sortField != fieldName ? sortDirection : reverseSortDirection}+${keyword != null ? '&keyword='+keyword:''}}">[[${columnHeader}]]</a>
 
       <span th:if="${sortField==fieldName}" th:class="${sortDirection == 'asc'}?'fas fa-sort-up':'fas fa-sort-down'"></span>
     </th>

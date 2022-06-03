@@ -17,10 +17,18 @@
     </properties>
     <dependencies>
 
+<!--        for csv files-->
         <dependency>
             <groupId>net.sf.supercsv</groupId>
             <artifactId>super-csv</artifactId>
             <version>2.4.0</version>
+        </dependency>
+
+<!--        for excel files-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>4.1.0</version>
         </dependency>
 
     </dependencies>
