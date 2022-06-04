@@ -21,6 +21,7 @@ public class UserExcelExporter extends AbstractExporter{
         sheet=workbook.createSheet("Users");
         XSSFRow row=sheet.createRow(0);
 
+        //for styling the cell contents
         XSSFCellStyle cellStyle=workbook.createCellStyle();
         XSSFFont font=workbook.createFont();
         font.setBold(true);

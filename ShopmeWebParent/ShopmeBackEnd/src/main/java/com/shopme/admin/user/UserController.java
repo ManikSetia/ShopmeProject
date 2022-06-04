@@ -189,4 +189,11 @@ public class UserController {
         List<User> listUsers=userService.listAllUsers();
         exporter.export(listUsers, response);
     }
+
+    @GetMapping("/users/export/pdf")
+    public void exportToPdf(HttpServletResponse response) throws IOException {
+        UserPdfExporter exporter=new UserPdfExporter();
+        List<User> listUsers=userService.listAllUsers();
+        exporter.export(listUsers, response);
+    }
 }
