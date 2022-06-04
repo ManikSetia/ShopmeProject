@@ -6,7 +6,7 @@
 </head>
 <body>
 
-    <th th:fragment="column_link(fieldName, columnHeader)">
+    <th th:fragment="column_link(fieldName, columnHeader, removeTag)" th:remove="${removeTag}">
       <a class="text-white" th:href="@{'/users/page/'+${currentPage}+'?sortField='+${fieldName}+'&sortDirection='+${sortField != fieldName ? sortDirection : reverseSortDirection}+${keyword != null ? '&keyword='+keyword:''}}">[[${columnHeader}]]</a>
 
       <span th:if="${sortField==fieldName}" th:class="${sortDirection == 'asc'}?'fas fa-sort-up':'fas fa-sort-down'"></span>
