@@ -39,7 +39,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .usernameParameter("email")
                 .permitAll()
                 .and()
-                .logout().permitAll();
+                .logout().permitAll()
+                .and().rememberMe().key("abcDefGHijklMNOpqrSTUVwxyz_123456789")
+                .tokenValiditySeconds(7 * 24 * 60 * 60);//setting expiration time to 7 days
     }
 
     @Override
