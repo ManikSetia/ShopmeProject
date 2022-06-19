@@ -19,6 +19,9 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
     <div class="container-fluid">
         <div>
             <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+                <form th:action="@{/logout}" method="post" name="logoutForm" th:hidden="true">
+                    <input type="submit" />
+                </form>
                 <a th:href="@{/}" class="navbar-brand">
                     <img th:src="@{/images/ShopmeAdminSmall.png}" />
                 </a>
@@ -66,7 +69,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" sec:authentication="principal.fullname" data-toggle="dropdown"></a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="">Logout</a>
+                                <a class="dropdown-item" id="logoutLink" href="">Logout</a>
                             </div>
                         </li>
                     </ul>
@@ -85,6 +88,13 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
     </div>
 
 
-
+<script>
+    $(document).ready(function(){
+       $("#logoutLink").on("click", function(e){
+           e.preventDefault();
+           document.logoutForm.submit();
+       });
+    });
+</script>
 </body>
 </html>
