@@ -40,6 +40,10 @@ public class UserService {
         return (List<Role>) roleRepository.findAll();
     }
 
+    public User getUserByEmail(String email){
+        return userRepository.getUserByEmail(email);
+    }
+
     public User save(User user){
         boolean isUpdatingUser= (user.getId() != null);
 
