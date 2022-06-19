@@ -6,6 +6,8 @@
     <div class="container-fluid">
         <div th:replace="navigation :: menu"></div>
 
+
+
         <form th:action="@{/account/update}" method="post" style="max-width: 700px; margin: 0 auto"
             th:object="${user}" enctype="multipart/form-data">
             <!-- This object is coming from controller(/users/new api)
@@ -14,6 +16,12 @@
             <div class="text-center">
                 <h2>Your Account Details</h2>
             </div>
+
+            <div th:if="${alertMessage != null}" class="alert alert-success text-center">
+                [[${alertMessage}]]
+            </div>
+
+
             <input type="hidden" th:field="*{id}"><!-- For validation of email in editing the form -->
             <div class="border border-secondary rounded p-3">
                 <div class="form-group row">

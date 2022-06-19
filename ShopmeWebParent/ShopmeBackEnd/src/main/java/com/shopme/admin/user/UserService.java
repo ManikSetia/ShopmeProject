@@ -44,6 +44,26 @@ public class UserService {
         return userRepository.getUserByEmail(email);
     }
 
+    public User updateAccount(User userInForm){
+        User userInDB=userRepository.findById(userInForm.getId()).get();
+
+        //if user wants to update his password
+        if(!userInForm.getPassword().isEmpty()){
+            userInDB.setPassword(userInForm.getPassword());
+            encodePassword(userInDB);
+        }
+
+        //if user wants to update his photo
+        if(userInForm.getPhotos() != null){
+            userInDB.setPhotos(userInForm.getPhotos());
+        }
+
+        userInDB.setFirstName(userInForm.getFirstName());
+        userInDB.setLastName(userInForm.getLastName());
+
+        return userRepository.save(userInDB);
+    }
+
     public User save(User user){
         boolean isUpdatingUser= (user.getId() != null);
 
