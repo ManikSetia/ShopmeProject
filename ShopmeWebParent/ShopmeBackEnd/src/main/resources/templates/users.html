@@ -149,11 +149,12 @@
         </div>
 
         <div class="less-details">
-            <div class="row m-2" th:each="user: ${userList}">
+            <div class="row m-1" th:each="user: ${userList}">
                 <div class="col-4">
                     <span th:if="${user.photos} == null" class="fas fa-portrait fa-3x icon-silver"></span>
                     <img th:if="${user.photos} != null" style="width: 100px;" th:src="@{${user.photosImagePath}}" />
                 </div>
+
                 <div class="col-8">
                     <div>[[${user.getFullName()}]]</div>
                     <div>[[${user.roles}]]</div>
@@ -169,6 +170,7 @@
                            th:href="@{'/users/delete/'+${user.id}}" title="Delete this user"></a>
                     </div>
                 </div>
+                <div>&nbsp;</div>
             </div>
         </div>
 
